@@ -48,8 +48,7 @@ function App() {
 
   useEffect(() => {
     setFilteredList("");
-    setSelectedStatus("");
-  }, resetButton)
+  }, [resetButton])
 
   //filtering the birdData based on the conservation status
   const filterByStatus = (filteredData) => {
@@ -79,6 +78,14 @@ function App() {
             .includes(searchField.toLowerCase().normalize("NFC")) ||
           bird
             .scientific_name
+            .toLowerCase()
+            .includes(searchField.toLowerCase()) || 
+          bird
+            .family
+            .toLowerCase()
+            .includes(searchField.toLowerCase()) ||
+          bird
+            .order
             .toLowerCase()
             .includes(searchField.toLowerCase())
         );
@@ -121,14 +128,14 @@ function App() {
 
   return (
     <div className="h-screen w-screen relative overflow-hidden">
-      <header className='sticky top-0 z-10'>
+      <header className='sticky top-0 z-10 shadow-md'>
         <h1 className='text-center p-4 font-serif text-3xl font-bold text-boa-white bg-boa-teal'>
           Birds of Aotearoa
         </h1>
       </header>
 
       <div className="w-full h-full flex flex-col md:flex-row">
-        <div className="h-[150px] w-full md:basis-1/5 md:h-full bg-neutral-400 bg-opacity-25">
+        <div className="h-[150px] w-full md:basis-1/5 md:h-full bg-neutral-400 bg-opacity-25 z-10 shadow-lg">
           <form>
             <h3 className="text-center mb-4 text-m pt-2 font-semibold md:text-left md:text-xl pl-4 md:pt-4 md:mb-0">Filter Birds</h3>
             <div className="flex flex-row md:flex-col px-4">
@@ -187,7 +194,7 @@ function App() {
         }
       </div>
 
-      <footer className='sticky bottom-0'>
+      <footer className='sticky bottom-0 shadow-md'>
         <h1 className="text-center p-2 font-serif text-boa-white bg-boa-teal">
           Data licensed from <a className="underline" href="https://www.birdsnz.org.nz/">Birds New Zealand</a> for educational use within the University of Otago.
         </h1>
