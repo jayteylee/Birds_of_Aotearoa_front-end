@@ -14,8 +14,8 @@ module.exports = {
         'boa-sand': '#ebcbae',
         'boa-brown': '#8f8787',
         'boa-dark-teal': '#53a8b6',
+        'status-colour': '#53a8b6',
       },
-
     },
   },
   plugins: [],

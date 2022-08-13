@@ -1,14 +1,14 @@
 function Card(props) {
   const bird = props.bird;
-  console.log(bird)
   return (
     <div className='flex flex-col relative bg-boa-white w-[275px] h-[400px] m-8 shadow-xl rounded-lg overflow-hidden'>
       <div className='w-full h-[183px]'>
       <div className="relative w-full h-full">
-        <img className="w-full h-full" src={bird.photo.source} alt="test photo" objectfit={'cover'}/>
+        <img className="w-full h-full object-cover" src={bird.photo.source} alt="test photo"/>
 
         <p className="absolute text-3xl py-4 px-4 bottom-0 left-0 text-white">{bird.primary_name}</p>
         <p className="absolute text-[7px] py-2 px-4 bottom-0 left-0 text-white">Photo by {bird.photo.credit}</p>
+        <div className="-bottom-4 right-4 absolute rounded-full bg-status-colour border-2 shadow-md w-10 h-10"></div>
         </div>
       </div>
       <h2 className='text-lg text-left pr-2 pl-3 py-3 font-serif font-extrabold'>

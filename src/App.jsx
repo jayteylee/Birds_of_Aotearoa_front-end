@@ -9,6 +9,8 @@ function App() {
   const [filteredList, setFilteredList] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState("");
   const [searchField, setSearchField] = useState("");
+  const [resetButton, setResetButton] = useState("");
+  // const [selectedSort, setSelectedSort] = useState("");
 
   const getData = () => {
     fetch('./data/nzbird.json'
@@ -40,8 +42,14 @@ function App() {
   useEffect(() => {
     var filteredData = filterByStatus(birdData);
     filteredData = filterBySearch(filteredData);
+    // filteredData = filterBySort(filteredData);
     setFilteredList(filteredData);
   }, [selectedStatus, searchField])
+
+  useEffect(() => {
+    setFilteredList("");
+    setSelectedStatus("");
+  }, resetButton)
 
   //filtering the birdData based on the conservation status
   const filterByStatus = (filteredData) => {
@@ -64,16 +72,32 @@ function App() {
           bird
             .english_name
             .toLowerCase()
-            .includes(searchField.toLowerCase().normalize("NFC")) ||
+            .includes(searchField.toLowerCase()) ||
           bird
             .primary_name
             .toLowerCase()
-            .includes(searchField.toLowerCase().normalize("NFC"))
+            .includes(searchField.toLowerCase().normalize("NFC")) ||
+          bird
+            .scientific_name
+            .toLowerCase()
+            .includes(searchField.toLowerCase())
         );
       }
     );
     return filteredBirds;
   }
+
+  // const filterBySort = (filteredData) => {
+  //   if(!selectedSort) {
+  //     return filteredData;
+  //   }
+  //   if(selectedSort === "alphabetical"){
+  //   const filteredBirds = filteredData.sort()
+  //   }else{
+  //   const filteredBirds = filteredData.sort()
+  //   return filteredBirds;
+  //   }
+  // }
 
   //called when a conservation status is selected 
   const handleStatusChange = (event) => {
@@ -83,6 +107,14 @@ function App() {
   const handleSearchChange = (event) => {
     setSearchField(event.target.value);
   };
+
+  const handleResetChange = (event) => {
+    setResetButton(event.target.value);
+  };
+
+  // const handleSortChange = (event) => {
+  //   setSelectedSort(event.trigger.value);
+  // }
 
   
 
@@ -98,16 +130,19 @@ function App() {
       <div className="w-full h-full flex flex-col md:flex-row">
         <div className="h-[150px] w-full md:basis-1/5 md:h-full bg-neutral-400 bg-opacity-25">
           <form>
-            <h3 className="font-semibold text-xl pl-4 pt-4">Filter Birds</h3>
-            <div className="flex flex-row md:flex-col md:flex-wrap px-4">
-              <label>Search</label>
-              <div className="mb-2">
-                <input type="text" value={searchField.normalize("NFC")} onChange={handleSearchChange} className="basis-1/3 md:w-full h-8 px-2 py-1 border border-black-300 rounded-lg shadow-sm text-xs" />
+            <h3 className="text-center mb-4 text-m pt-2 font-semibold md:text-left md:text-xl pl-4 md:pt-4 md:mb-0">Filter Birds</h3>
+            <div className="flex flex-row md:flex-col px-4">
+              <div className="text-sm md:text-m">
+              <label>Search:</label>
               </div>
-
-              <label>Conservation Status</label>
-              <div className="mb-2">
-                <select value={selectedStatus} onChange={handleStatusChange} className="w-full h-8 px-2 py-1 border border-black-300 rounded-lg text-xs shadow-sm text-left bg-white">
+              <div className="mb-2 ml-2 mr-2 md:mx-0">
+                <input type="text" value={searchField} onChange={handleSearchChange} className="w-full basis-1/3 h-8 px-2 py-1 border border-black-300 rounded-lg shadow-sm text-xs" />
+              </div>
+              <div className="text-sm md:text-m">
+              <label>Conservation Status:</label>
+              </div>
+              <div className="mb-2 ml-2 mr-2 md:mx-0">
+                <select value={selectedStatus} onChange={handleStatusChange} className="w-full h-8 px-2 py-1 border border-black-300  rounded-lg text-xs shadow-sm text-left bg-white">
                   <option value="">All</option>
                   <option value="Not Threatened">Not Threatened</option>
                   <option value="Naturally Uncommon">Naturally Uncommon</option>
@@ -121,16 +156,20 @@ function App() {
                   <option value="Data Deficient">Data Deficient</option>
                 </select>
               </div>
+              <div className="text-sm md:text-m">
               <label>Sort by:</label>
-              <div className="mb-2">
-                <select className="w-full h-8 px-2 py-1 border border-black-300 rounded-lg text-xs shadow-sm text-left bg-white">
+              </div>
+              <div className="mb-2 ml-2 mr-2 md:mx-0">
+                <select /*value={selectedSort} onChange={handleSortChange}*/ className="w-full h-8 px-2 py-1 border border-black-300 rounded-lg text-xs shadow-sm text-left bg-white">
                   <option value="weight">Lightest to heaviest</option>
                   <option value="length">Shortest to longest</option>
                   <option value="alphabetical">A-Z</option>
                   <option value="reverse-alphabetical">Z-A</option>
                 </select>
               </div>
-              <input type="submit" value="FILTER RESULTS" className="truncate w-full h-7 px-4 border border-black-300 rounded-lg shadow-sm text-center text-s bg-sky-300 bg-opacity-25" />
+            </div>
+            <div className="text-center pt-4">
+            <input type="submit" value="RESET FILTERS" onChange={handleResetChange} className="truncate w-1/2 md:w-11/12 h-7 px-4 border border-black-300 rounded-lg shadow-sm text-center text-s bg-sky-300 bg-opacity-25" />
             </div>
           </form>
         </div>
@@ -139,22 +178,7 @@ function App() {
             {
               filteredList.map(bird => {
                 return (
-                  <Card
-                    bird={bird}
-                    // name={bird.english_name}
-                    // img={bird.photo.source}
-                    // sciName={bird.scientific_name}
-                    // family={bird.family}
-                    // order={bird.order}
-                    // status={bird.status}
-                    // length={bird.size.length.value}
-                    // lengthUnit={bird.size.length.units}
-                    // weight={bird.size.weight.value}
-                    // weightUnit={bird.size.weight.units}
-                    // primName={bird.primary_name}
-                    // credit={bird.photo.credit}
-                    >
-                  </Card>
+                  <Card bird={bird}></Card>
                 )
               })
             }
@@ -169,8 +193,6 @@ function App() {
         </h1>
       </footer>
     </div>
-
-
   );
 
 }
