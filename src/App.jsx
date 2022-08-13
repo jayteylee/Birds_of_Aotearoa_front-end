@@ -10,7 +10,7 @@ function App() {
   const [selectedStatus, setSelectedStatus] = useState("");
   const [searchField, setSearchField] = useState("");
   const [resetButton, setResetButton] = useState("");
-  // const [selectedSort, setSelectedSort] = useState("");
+  const [selectedSort, setSelectedSort] = useState("alphabetical");
 
   const getData = () => {
     fetch('./data/nzbird.json'
@@ -40,61 +40,55 @@ function App() {
   }, [])
 
   useEffect(() => {
-    var filteredData = filterByStatus(birdData);
-    filteredData = filterBySearch(filteredData);
-    // filteredData = filterBySort(filteredData);
-    setFilteredList(filteredData);
-  }, [selectedStatus, searchField])
+    let filteredBirds = filterByStatus(selectedStatus, birdData);
+    filteredBirds = filterBySearch(searchField, filteredBirds);
+    filteredBirds = sortBirds(selectedSort, filteredBirds);
+    setFilteredList(filteredBirds);
+  }, [selectedStatus, searchField, selectedSort, birdData])
 
   useEffect(() => {
     setFilteredList("");
   }, [resetButton])
 
-  //filtering the birdData based on the conservation status
-  const filterByStatus = (filteredData) => {
-    if (!selectedStatus) {
-      return filteredData;
+  const filterByStatus = (status, birds) => {
+    if (status) {
+      return birds.filter(
+        (bird) => bird.status === selectedStatus
+      );
     }
-    const filteredBirds = filteredData.filter(
-      (bird) => bird.status === selectedStatus
-    );
-    return filteredBirds;
-  };
-
-  const filterBySearch = (filteredData) => {
-    if (!searchField) {
-      return filteredData;
-    }
-    const filteredBirds = filteredData.filter(
-      (bird) => {
-        return (
-          bird
-            .english_name
-            .toLowerCase()
-            .includes(searchField.toLowerCase()) ||
-          bird
-            .primary_name
-            .toLowerCase()
-            .includes(searchField.toLowerCase().normalize("NFC")) ||
-          bird
-            .scientific_name
-            .toLowerCase()
-            .includes(searchField.toLowerCase()) || 
-          bird
-            .family
-            .toLowerCase()
-            .includes(searchField.toLowerCase()) ||
-          bird
-            .order
-            .toLowerCase()
-            .includes(searchField.toLowerCase())
-        );
-      }
-    );
-    return filteredBirds;
+    return birds;
   }
 
-  // const filterBySort = (filteredData) => {
+  const sortBirds = (sort, birds) => {
+  //   return birds.filter(
+  //     (bird) => {
+  //       return (
+  //         bird
+  //           .english_name
+  //           .toLowerCase()
+  //           .includes(searchField.toLowerCase()) ||
+  //         bird
+  //           .primary_name
+  //           .toLowerCase()
+  //           .includes(searchField.toLowerCase().normalize("NFC")) ||
+  //         bird
+  //           .scientific_name
+  //           .toLowerCase()
+  //           .includes(searchField.toLowerCase()) ||
+  //         bird
+  //           .family
+  //           .toLowerCase()
+  //           .includes(searchField.toLowerCase()) ||
+  //         bird
+  //           .order
+  //           .toLowerCase()
+  //           .includes(searchField.toLowerCase())
+  //       );
+  //     }
+  //   )
+   }
+
+     // const filterBySort = (filteredData) => {
   //   if(!selectedSort) {
   //     return filteredData;
   //   }
@@ -105,6 +99,39 @@ function App() {
   //   return filteredBirds;
   //   }
   // }
+
+  const filterBySearch = (search, birds) => {
+    if (search) {
+      return birds.filter(
+        (bird) => {
+          return (
+            bird
+              .english_name
+              .toLowerCase()
+              .includes(searchField.toLowerCase()) ||
+            bird
+              .primary_name
+              .toLowerCase()
+              .includes(searchField.toLowerCase().normalize("NFC")) ||
+            bird
+              .scientific_name
+              .toLowerCase()
+              .includes(searchField.toLowerCase()) ||
+            bird
+              .family
+              .toLowerCase()
+              .includes(searchField.toLowerCase()) ||
+            bird
+              .order
+              .toLowerCase()
+              .includes(searchField.toLowerCase())
+          );
+        }
+      )
+    }
+    return birds;
+  }
+
 
   //called when a conservation status is selected 
   const handleStatusChange = (event) => {
@@ -119,11 +146,11 @@ function App() {
     setResetButton(event.target.value);
   };
 
-  // const handleSortChange = (event) => {
-  //   setSelectedSort(event.trigger.value);
-  // }
+  const handleSortChange = (event) => {
+    setSelectedSort(event.trigger.value);
+  }
 
-  
+
 
 
   return (
@@ -140,13 +167,13 @@ function App() {
             <h3 className="text-center mb-4 text-m pt-2 font-semibold md:text-left md:text-xl pl-4 md:pt-4 md:mb-0">Filter Birds</h3>
             <div className="flex flex-row md:flex-col px-4">
               <div className="text-sm md:text-m">
-              <label>Search:</label>
+                <label>Search:</label>
               </div>
               <div className="mb-2 ml-2 mr-2 md:mx-0">
                 <input type="text" value={searchField} onChange={handleSearchChange} className="w-full basis-1/3 h-8 px-2 py-1 border border-black-300 rounded-lg shadow-sm text-xs" />
               </div>
               <div className="text-sm md:text-m">
-              <label>Conservation Status:</label>
+                <label>Conservation Status:</label>
               </div>
               <div className="mb-2 ml-2 mr-2 md:mx-0">
                 <select value={selectedStatus} onChange={handleStatusChange} className="w-full h-8 px-2 py-1 border border-black-300  rounded-lg text-xs shadow-sm text-left bg-white">
@@ -164,28 +191,28 @@ function App() {
                 </select>
               </div>
               <div className="text-sm md:text-m">
-              <label>Sort by:</label>
+                <label>Sort by:</label>
               </div>
               <div className="mb-2 ml-2 mr-2 md:mx-0">
-                <select /*value={selectedSort} onChange={handleSortChange}*/ className="w-full h-8 px-2 py-1 border border-black-300 rounded-lg text-xs shadow-sm text-left bg-white">
-                  <option value="weight">Lightest to heaviest</option>
-                  <option value="length">Shortest to longest</option>
+                <select value={selectedSort} onChange={handleSortChange} className="w-full h-8 px-2 py-1 border border-black-300 rounded-lg text-xs shadow-sm text-left bg-white">
                   <option value="alphabetical">A-Z</option>
                   <option value="reverse-alphabetical">Z-A</option>
+                  <option value="weight">Lightest to heaviest</option>
+                  <option value="length">Shortest to longest</option>
                 </select>
               </div>
             </div>
             <div className="text-center pt-4">
-            <input type="submit" value="RESET FILTERS" onChange={handleResetChange} className="truncate w-1/2 md:w-11/12 h-7 px-4 border border-black-300 rounded-lg shadow-sm text-center text-s bg-sky-300 bg-opacity-25" />
+              <input type="submit" value="RESET FILTERS" onChange={handleResetChange} className="truncate w-1/2 md:w-11/12 h-7 px-4 border border-black-300 rounded-lg shadow-sm text-center text-s bg-sky-300 bg-opacity-25" />
             </div>
           </form>
         </div>
         {filteredList && <main className="h-full basis-4/5  bg-white overflow-y-auto pb-[140px]">
           <div className="flex flex-row flex-wrap justify-center">
             {
-              filteredList.map(bird => {
+              filteredList.map((bird, index) => {
                 return (
-                  <Card bird={bird}></Card>
+                  <Card key={index} bird={bird}></Card>
                 )
               })
             }
