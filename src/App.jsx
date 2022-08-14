@@ -65,7 +65,7 @@ function App() {
         if (a.english_name < b.english_name) { return -1; }
         return 0;
       });
-    }if (sort === "eng-reverse" && birds) {
+    } if (sort === "eng-reverse" && birds) {
       return birds.sort((a, b) => {
         if (a.english_name > b.english_name) { return -1; }
         if (a.english_name < b.english_name) { return 1; }
@@ -83,25 +83,25 @@ function App() {
         if (a.primary_name < b.primary_name) { return 1; }
         return 0;
       });
-    }if (sort === "increasing-weight" && birds) {
+    } if (sort === "increasing-weight" && birds) {
       return birds.sort((a, b) => {
         if (a.size.weight.value > b.size.weight.value) { return 1; }
         if (a.size.weight.value < b.size.weight.value) { return -1; }
         return 0;
       });
-    }if (sort === "decreasing-weight" && birds) {
+    } if (sort === "decreasing-weight" && birds) {
       return birds.sort((a, b) => {
         if (a.size.weight.value > b.size.weight.value) { return -1; }
         if (a.size.weight.value < b.size.weight.value) { return 1; }
         return 0;
       });
-    }if (sort === "increasing-length" && birds) {
+    } if (sort === "increasing-length" && birds) {
       return birds.sort((a, b) => {
         if (a.size.length.value > b.size.length.value) { return 1; }
         if (a.size.length.value < b.size.length.value) { return -1; }
         return 0;
       });
-    }if (sort === "decreasing-length" && birds) {
+    } if (sort === "decreasing-length" && birds) {
       return birds.sort((a, b) => {
         if (a.size.length.value > b.size.length.value) { return -1; }
         if (a.size.length.value < b.size.length.value) { return 1; }
@@ -122,9 +122,9 @@ function App() {
               .toLowerCase()
               .includes(searchField.toLowerCase()) ||
             bird
-              .primary_name
+              .primary_name.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
               .toLowerCase()
-              .includes(searchField.toLowerCase().normalize("NFC")) ||
+              .includes(searchField.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')) ||
             bird
               .scientific_name
               .toLowerCase()
@@ -135,6 +135,11 @@ function App() {
               .includes(searchField.toLowerCase()) ||
             bird
               .order
+              .toLowerCase()
+              .includes(searchField.toLowerCase()) ||
+            bird
+              .other_names
+              .toString()
               .toLowerCase()
               .includes(searchField.toLowerCase())
           );
@@ -174,17 +179,17 @@ function App() {
       </header>
 
       <div className="w-full h-full flex flex-col md:flex-row">
-        <div className="h-[150px] w-full md:basis-1/5 md:h-full bg-neutral-400 bg-opacity-25 z-10 shadow-lg">
+        <div className="h-[575px] w-full md:basis-1/5 md:h-full bg-neutral-400 bg-opacity-25 z-10 shadow-lg">
           <form>
-            <h3 className="text-center mb-4 text-m pt-2 font-semibold md:text-left pl-4 md:pt-4 md:mb-0 pb-3">Filter Birds</h3>
-            <div className="flex flex-row md:flex-col px-4">
-              <div className="text-sm md:text-m">
+            <h3 className="text-center text-m pt-2 font-semibold md:text-left pl-4 md:pt-4 md:mb-0 pb-3">Filter Birds</h3>
+            <div className="flex flex-col px-4">
+              <div className="pl-2 md:pl-0 text-sm md:text-m">
                 <label>Search:</label>
               </div>
               <div className="mb-2 ml-2 mr-2 md:mx-0">
                 <input type="text" value={searchField} onChange={handleSearchChange} className="w-full basis-1/3 h-8 px-2 py-1 border border-black-300 rounded-lg shadow-sm text-xs" />
               </div>
-              <div className="text-sm md:text-m">
+              <div className="pl-2 md:pl-0 text-sm md:text-m">
                 <label>Conservation Status:</label>
               </div>
               <div className="mb-2 ml-2 mr-2 md:mx-0">
@@ -202,7 +207,7 @@ function App() {
                   <option value="Data Deficient">Data Deficient</option>
                 </select>
               </div>
-              <div className="text-sm md:text-m">
+              <div className="pl-2 md:pl-0 text-sm md:text-m">
                 <label>Sort by:</label>
               </div>
               <div className="mb-2 ml-2 mr-2 md:mx-0">
@@ -221,37 +226,38 @@ function App() {
             <div className="text-center pt-4 pb-3">
               <input type="submit" value="RESET FILTERS" onChange={handleResetChange} className="truncate w-1/2 md:w-11/12 h-7 px-4 border border-black-300 rounded-lg shadow-sm text-center text-s bg-sky-300 bg-opacity-25" />
             </div>
+            <h3 className="text-center mb-3 text-m font-semibold md:text-left md:text-m px-4 md:pt-8">Conservation Status</h3>
+            <div className="flex flex-row justify-center md:justify-start">
+              <div className="gap-1 relative flex flex-col md:gap-2 pl-4 pr-1">
+                <div className="rounded-full border-2 bg-not-threatened shadow-md w-4 h-4"></div>
+                <div className="rounded-full border-2 bg-naturally-uncommon shadow-md w-4 h-4"></div>
+                <div className="rounded-full border-2 bg-relict shadow-md w-4 h-4"></div>
+                <div className="rounded-full border-2 bg-recovering shadow-md w-4 h-4"></div>
+                <div className="rounded-full border-2 bg-declining shadow-md w-4 h-4"></div>
+                <div className="rounded-full border-2 bg-nationally-increasing shadow-md w-4 h-4"></div>
+                <div className="rounded-full border-2 bg-nationally-vulnerable shadow-md w-4 h-4"></div>
+                <div className="rounded-full border-2 bg-nationally-endangered shadow-md w-4 h-4"></div>
+                <div className="rounded-full border-2 bg-nationally-critical shadow-md w-4 h-4"></div>
+                <div className="rounded-full border-2 bg-black shadow-md w-4 h-4"></div>
+              </div>
+              <div className="relative flex flex-col gap-1 pr-4">
+                <p className="text-xs md:pb-1 font-medium truncate">Not Threatened </p>
+                <p className="text-xs md:pb-1 font-medium truncate">Naturally Uncommon </p>
+                <p className="text-xs md:pb-1 font-medium truncate">Relict </p>
+                <p className="text-xs md:pb-1 font-medium truncate">Recovering </p>
+                <p className="text-xs md:pb-1 font-medium truncate">Declining </p>
+                <p className="text-xs md:pb-1 font-medium truncate">Nationally Increasing</p>
+                <p className="text-xs md:pb-1 font-medium truncate">Nationally Vulnerable </p>
+                <p className="text-xs md:pb-1 font-medium truncate">Nationally Endangered </p>
+                <p className="text-xs md:pb-1 font-medium truncate">Nationally Critical </p>
+                <p className="text-xs md:pb-1 font-medium truncate">Data Deficient </p>
+              </div>
+            </div>
+            <h1 className="text-xs text-center pt-4 md:pt-5 font-serif pb-10 truncate px-5">
+              Conservation status from <a className="underline" href="https://www.doc.govt.nz/nature/conservation-status/">DOC website.</a>
+            </h1>
           </form>
-          <h3 className="text-center mb-4 text-m pt-2 font-semibold md:text-left md:text-m pl-4 md:pt-16 md:mb-3">Conservation Status</h3>
-          <div className="flex flex-row">
-            <div className="relative flex flex-col gap-2 pl-4 pr-1">
-            <div className="rounded-full border-2 bg-not-threatened shadow-md w-4 h-4"></div>
-            <div className="rounded-full border-2 bg-naturally-uncommon shadow-md w-4 h-4"></div>
-            <div className="rounded-full border-2 bg-relict shadow-md w-4 h-4"></div>
-            <div className="rounded-full border-2 bg-recovering shadow-md w-4 h-4"></div>
-            <div className="rounded-full border-2 bg-declining shadow-md w-4 h-4"></div>
-            <div className="rounded-full border-2 bg-nationally-increasing shadow-md w-4 h-4"></div>
-            <div className="rounded-full border-2 bg-nationally-vulnerable shadow-md w-4 h-4"></div>
-            <div className="rounded-full border-2 bg-nationally-endangered shadow-md w-4 h-4"></div>
-            <div className="rounded-full border-2 bg-nationally-critical shadow-md w-4 h-4"></div>
-            <div className="rounded-full border-2 bg-black shadow-md w-4 h-4"></div>
-            </div>
-            <div className="relative flex flex-col gap-1">
-            <p className="text-xs pb-1 font-medium">Not Threatened </p>
-            <p className="text-xs pb-1 font-medium">Naturally Uncommon </p>
-            <p className="text-xs pb-1 font-medium">Relict </p>
-            <p className="text-xs pb-1 font-medium">Recovering </p>
-            <p className="text-xs pb-1 font-medium">Declining </p>
-            <p className="text-xs pb-1 font-medium">Nationally Increasing</p>
-            <p className="text-xs pb-1 font-medium">Nationally Vulnerable </p>
-            <p className="text-xs pb-1 font-medium">Nationally Endangered </p>
-            <p className="text-xs pb-1 font-medium">Nationally Critical </p>
-            <p className="text-xs pb-1 font-medium">Data Deficient </p>
-            </div>
-            </div>
-            <h1 className="text-xs text-center pt-5 font-serif">
-          Conservation status from <a className="underline" href="https://www.doc.govt.nz/nature/conservation-status/">DOC website.</a>
-        </h1>
+
         </div>
         {filteredList && <main className="h-full basis-4/5  bg-white overflow-y-auto pb-[140px]">
           <div className="flex flex-row flex-wrap justify-center">
@@ -267,7 +273,7 @@ function App() {
         }
       </div>
 
-      <footer className='sticky bottom-0 shadow-md'>
+      <footer className='sticky bottom-0 shadow-md z-10 bg-opacity-100'>
         <h1 className="text-center p-2 font-serif text-boa-white bg-boa-teal">
           Data licensed from <a className="underline" href="https://www.birdsnz.org.nz/">Birds New Zealand</a> for educational use within the University of Otago.
         </h1>
