@@ -53,9 +53,9 @@ function Card(props) {
           <p className="font-bold text-xs px-2 pb-1 ml-2">Weight:</p> 
           </div>
           <div>
-          <p className="text-xs pb-1 italic font-medium">{bird.scientific_name} </p>
-          <p className="text-xs pb-1 italic font-medium">{bird.family} </p>
-          <p className="text-xs pb-1 italic font-medium">{bird.order} </p>
+          <p className="text-xs pb-1 italic font-semibold">{bird.scientific_name} </p>
+          <p className="text-xs pb-1 italic font-semibold">{bird.family} </p>
+          <p className="text-xs pb-1 italic font-semibold">{bird.order} </p>
           <p className="text-xs pb-1">{bird.status} </p>
           <p className="text-xs pb-1">{bird.size.length.value} {bird.size.length.units}</p>
           <p className="text-xs pb-1">{bird.size.weight.value} {bird.size.weight.units} </p>

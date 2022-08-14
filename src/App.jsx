@@ -1,16 +1,15 @@
 import { useEffect, useState } from "react";
 import Card from "./card";
 
-//My problem is that the page initially loads with the filteredList but that is based off the birdData which has an initial state of null
-//Hence nothing is showing up on the page but after I play with the filters, everything shows up properly
 
 function App() {
-  const [birdData, setBirdData] = useState(null);
-  const [filteredList, setFilteredList] = useState(null);
+  const [birdData, setBirdData] = useState([]);
+  const [filteredList, setFilteredList] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("");
   const [searchField, setSearchField] = useState("");
   const [resetButton, setResetButton] = useState("");
   const [selectedSort, setSelectedSort] = useState("eng-alphabetical");
+  const [menuOpen, setMenuOpen] = useState(true);
 
   const getData = () => {
     fetch('./data/nzbird.json'
@@ -40,7 +39,7 @@ function App() {
     let filteredBirds = filterByStatus(selectedStatus, birdData);
     filteredBirds = filterBySearch(searchField, filteredBirds);
     filteredBirds = sortBirds(selectedSort, filteredBirds);
-    setFilteredList(filteredBirds);
+    setFilteredList([...filteredBirds]);
   }, [selectedStatus, searchField, selectedSort, birdData])
 
   useEffect(() => {
@@ -167,19 +166,26 @@ function App() {
     setSelectedSort(event.target.value);
   }
 
+  const handleButtonClick = (event) => {
+    setMenuOpen(!menuOpen);
+  }
 
 
 
   return (
     <div className="h-screen w-screen relative overflow-hidden">
-      <header className='sticky top-0 z-10 shadow-md'>
-        <h1 className='text-center p-4 font-roboto text-3xl font-bold text-boa-white bg-boa-teal'>
+      <header className='sticky top-0 z-10 shadow-md bg-boa-teal flex flex-row justify-between items-center'>
+        <div className="basis-1/4">
+        <button onClick={handleButtonClick} className="text-sm font-medium transition-all hover:bg-slate-200 px-4 py-1 border-1 bg-white rounded-lg mx-4">{menuOpen ? "Close Menu" : "Expand Menu"}</button>
+        </div>
+        <h1 className='basis-1/2 text-center p-4 font-roboto text-3xl font-bold text-boa-white '>
           Birds of Aotearoa
         </h1>
+        <div className="basis-1/4"></div>
       </header>
 
       <div className="w-full h-full flex flex-col md:flex-row">
-        <div className="h-[575px] w-full md:basis-1/5 md:h-full bg-neutral-400 bg-opacity-25 z-10 shadow-lg">
+        <div className={`${menuOpen ? "h-[575px] md:basis-1/5":"h-0 md:basis-0 overflow-hidden"} transition-all w-full md:h-full bg-neutral-400 bg-opacity-25 z-10 shadow-lg`}>
           <form>
             <h3 className="text-center text-m pt-2 font-roboto font-semibold md:text-left pl-4 md:pt-4 md:mb-0 pb-3">Filter Birds</h3>
             <div className="flex flex-col px-4">
@@ -259,7 +265,7 @@ function App() {
           </form>
 
         </div>
-        {filteredList && <main className="h-full basis-4/5  bg-white overflow-y-auto pb-[140px]">
+        {filteredList && <main className={`${menuOpen ?  "md:basis-4/5":"md:basis-full"} transition-all h-full  bg-white overflow-y-auto pb-[140px]`}>
           <div className="flex flex-row flex-wrap justify-center">
             {
               filteredList.map((bird, index) => {
@@ -274,7 +280,7 @@ function App() {
       </div>
 
       <footer className='sticky bottom-0 shadow-md z-10 bg-opacity-100'>
-        <h1 className="text-center p-2 font-serif text-boa-white bg-boa-teal">
+        <h1 className="text-center p-2 font-roboto text-sm text-boa-white bg-boa-teal">
           Data licensed from <a className="underline" href="https://www.birdsnz.org.nz/">Birds New Zealand</a> for educational use within the University of Otago.
         </h1>
       </footer>
