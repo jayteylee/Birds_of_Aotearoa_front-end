@@ -11,31 +11,121 @@ function App() {
   const [selectedSort, setSelectedSort] = useState("eng-alphabetical");
   const [menuOpen, setMenuOpen] = useState(true);
 
-  const getData = () => {
-    fetch('./data/nzbird.json'
-      , {
+  useEffect(() => {
+    const getData = async () => {
+      const data = await fetch('./data/nzbird.json', {
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
         }
       }
-    )
-      .then(response => {
-        if (!response.ok) {
-          console.error(response.status);
-        }
-        return response.json();
-      })
-      .then(data => {
-        setBirdData(data);
-        setFilteredList(sortBirds(selectedSort, data));
-      });
-  };
-  useEffect(() => {
+      )
+      const json = await data.json();
+      setBirdData(json);
+    };
     getData();
   }, [])
 
   useEffect(() => {
+    const sortBirds = (sort, birds) => {
+      if (sort === "eng-alphabetical" && birds) {
+        return birds.sort((a, b) => {
+          if (a.english_name > b.english_name) { return 1; }
+          if (a.english_name < b.english_name) { return -1; }
+          return 0;
+        });
+      } if (sort === "eng-reverse" && birds) {
+        return birds.sort((a, b) => {
+          if (a.english_name > b.english_name) { return -1; }
+          if (a.english_name < b.english_name) { return 1; }
+          return 0;
+        });
+      } if (sort === "mao-alphabetical" && birds) {
+        return birds.sort((a, b) => {
+          if (a.primary_name > b.primary_name) { return 1; }
+          if (a.primary_name < b.primary_name) { return -1; }
+          return 0;
+        });
+      } if (sort === "mao-reverse" && birds) {
+        return birds.sort((a, b) => {
+          if (a.primary_name > b.primary_name) { return -1; }
+          if (a.primary_name < b.primary_name) { return 1; }
+          return 0;
+        });
+      } if (sort === "increasing-weight" && birds) {
+        return birds.sort((a, b) => {
+          if (a.size.weight.value > b.size.weight.value) { return 1; }
+          if (a.size.weight.value < b.size.weight.value) { return -1; }
+          return 0;
+        });
+      } if (sort === "decreasing-weight" && birds) {
+        return birds.sort((a, b) => {
+          if (a.size.weight.value > b.size.weight.value) { return -1; }
+          if (a.size.weight.value < b.size.weight.value) { return 1; }
+          return 0;
+        });
+      } if (sort === "increasing-length" && birds) {
+        return birds.sort((a, b) => {
+          if (a.size.length.value > b.size.length.value) { return 1; }
+          if (a.size.length.value < b.size.length.value) { return -1; }
+          return 0;
+        });
+      } if (sort === "decreasing-length" && birds) {
+        return birds.sort((a, b) => {
+          if (a.size.length.value > b.size.length.value) { return -1; }
+          if (a.size.length.value < b.size.length.value) { return 1; }
+          return 0;
+        });
+      }
+      return birds;
+    }
+  
+    const filterByStatus = (status, birds) => {
+      if (status) {
+        return birds.filter(
+          (bird) => bird.status === selectedStatus
+        );
+      }
+      return birds;
+    }
+
+    const filterBySearch = (search, birds) => {
+      if (search) {
+        return birds.filter(
+          (bird) => {
+            return (
+              bird
+                .english_name
+                .toLowerCase()
+                .includes(searchField.toLowerCase()) ||
+              bird
+                .primary_name.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase()
+                .includes(searchField.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')) ||
+              bird
+                .scientific_name
+                .toLowerCase()
+                .includes(searchField.toLowerCase()) ||
+              bird
+                .family
+                .toLowerCase()
+                .includes(searchField.toLowerCase()) ||
+              bird
+                .order
+                .toLowerCase()
+                .includes(searchField.toLowerCase()) ||
+              bird
+                .other_names
+                .toString()
+                .toLowerCase()
+                .includes(searchField.toLowerCase())
+            );
+          }
+        )
+      }
+      return birds;
+    }
+
     let filteredBirds = filterByStatus(selectedStatus, birdData);
     filteredBirds = filterBySearch(searchField, filteredBirds);
     filteredBirds = sortBirds(selectedSort, filteredBirds);
@@ -47,109 +137,6 @@ function App() {
     setSelectedSort("eng-alphabetical")
   }, [resetButton])
 
-  const filterByStatus = (status, birds) => {
-    if (status) {
-      return birds.filter(
-        (bird) => bird.status === selectedStatus
-      );
-    }
-    return birds;
-  }
-
-
-  const sortBirds = (sort, birds) => {
-    if (sort === "eng-alphabetical" && birds) {
-      return birds.sort((a, b) => {
-        if (a.english_name > b.english_name) { return 1; }
-        if (a.english_name < b.english_name) { return -1; }
-        return 0;
-      });
-    } if (sort === "eng-reverse" && birds) {
-      return birds.sort((a, b) => {
-        if (a.english_name > b.english_name) { return -1; }
-        if (a.english_name < b.english_name) { return 1; }
-        return 0;
-      });
-    } if (sort === "mao-alphabetical" && birds) {
-      return birds.sort((a, b) => {
-        if (a.primary_name > b.primary_name) { return 1; }
-        if (a.primary_name < b.primary_name) { return -1; }
-        return 0;
-      });
-    } if (sort === "mao-reverse" && birds) {
-      return birds.sort((a, b) => {
-        if (a.primary_name > b.primary_name) { return -1; }
-        if (a.primary_name < b.primary_name) { return 1; }
-        return 0;
-      });
-    } if (sort === "increasing-weight" && birds) {
-      return birds.sort((a, b) => {
-        if (a.size.weight.value > b.size.weight.value) { return 1; }
-        if (a.size.weight.value < b.size.weight.value) { return -1; }
-        return 0;
-      });
-    } if (sort === "decreasing-weight" && birds) {
-      return birds.sort((a, b) => {
-        if (a.size.weight.value > b.size.weight.value) { return -1; }
-        if (a.size.weight.value < b.size.weight.value) { return 1; }
-        return 0;
-      });
-    } if (sort === "increasing-length" && birds) {
-      return birds.sort((a, b) => {
-        if (a.size.length.value > b.size.length.value) { return 1; }
-        if (a.size.length.value < b.size.length.value) { return -1; }
-        return 0;
-      });
-    } if (sort === "decreasing-length" && birds) {
-      return birds.sort((a, b) => {
-        if (a.size.length.value > b.size.length.value) { return -1; }
-        if (a.size.length.value < b.size.length.value) { return 1; }
-        return 0;
-      });
-    }
-    return birds;
-  }
-
-
-  const filterBySearch = (search, birds) => {
-    if (search) {
-      return birds.filter(
-        (bird) => {
-          return (
-            bird
-              .english_name
-              .toLowerCase()
-              .includes(searchField.toLowerCase()) ||
-            bird
-              .primary_name.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-              .toLowerCase()
-              .includes(searchField.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')) ||
-            bird
-              .scientific_name
-              .toLowerCase()
-              .includes(searchField.toLowerCase()) ||
-            bird
-              .family
-              .toLowerCase()
-              .includes(searchField.toLowerCase()) ||
-            bird
-              .order
-              .toLowerCase()
-              .includes(searchField.toLowerCase()) ||
-            bird
-              .other_names
-              .toString()
-              .toLowerCase()
-              .includes(searchField.toLowerCase())
-          );
-        }
-      )
-    }
-    return birds;
-  }
-
-
-  //called when a conservation status is selected 
   const handleStatusChange = (event) => {
     setSelectedStatus(event.target.value);
   };
@@ -176,7 +163,7 @@ function App() {
     <div className="h-screen w-screen relative overflow-hidden">
       <header className='sticky top-0 z-10 shadow-md bg-boa-teal flex flex-row justify-between items-center'>
         <div className="basis-1/4">
-        <button onClick={handleButtonClick} className="text-sm font-medium transition-all hover:bg-slate-200 px-4 py-1 border-1 bg-white rounded-lg mx-4">{menuOpen ? "Close Menu" : "Expand Menu"}</button>
+          <button onClick={handleButtonClick} className="text-sm font-medium transition-all hover:bg-slate-200 px-4 py-1 border-1 bg-white rounded-lg mx-4">{menuOpen ? "Close Menu" : "Expand Menu"}</button>
         </div>
         <h1 className='basis-1/2 text-center p-4 font-roboto text-3xl font-bold text-boa-white '>
           Birds of Aotearoa
@@ -185,7 +172,7 @@ function App() {
       </header>
 
       <div className="w-full h-full flex flex-col md:flex-row">
-        <div className={`${menuOpen ? "h-[575px] md:basis-1/5":"h-0 md:basis-0 overflow-hidden"} transition-all w-full md:h-full bg-neutral-400 bg-opacity-25 z-10 shadow-lg`}>
+        <div className={`${menuOpen ? "h-[575px] md:basis-1/5" : "h-0 md:basis-0 overflow-hidden"} transition-all w-full md:h-full bg-neutral-400 bg-opacity-25 z-10 shadow-lg`}>
           <form>
             <h3 className="text-center text-m pt-2 font-roboto font-semibold md:text-left pl-4 md:pt-4 md:mb-0 pb-3">Filter Birds</h3>
             <div className="flex flex-col px-4">
@@ -265,7 +252,7 @@ function App() {
           </form>
 
         </div>
-        {filteredList && <main className={`${menuOpen ?  "md:basis-4/5":"md:basis-full"} transition-all h-full  bg-white overflow-y-auto pb-[140px]`}>
+        {filteredList && <main className={`${menuOpen ? "md:basis-4/5" : "md:basis-full"} transition-all h-full  bg-white overflow-y-auto pb-[140px]`}>
           <div className="flex flex-row flex-wrap justify-center">
             {
               filteredList.map((bird, index) => {
