@@ -10,7 +10,7 @@ function App() {
   const [selectedStatus, setSelectedStatus] = useState("");
   const [searchField, setSearchField] = useState("");
   const [resetButton, setResetButton] = useState("");
-  const [selectedSort, setSelectedSort] = useState("alphabetical");
+  const [selectedSort, setSelectedSort] = useState("eng-alphabetical");
 
   const getData = () => {
     fetch('./data/nzbird.json'
@@ -32,7 +32,6 @@ function App() {
         setFilteredList(sortBirds(selectedSort, data));
       });
   };
-
   useEffect(() => {
     getData();
   }, [])
@@ -41,12 +40,12 @@ function App() {
     let filteredBirds = filterByStatus(selectedStatus, birdData);
     filteredBirds = filterBySearch(searchField, filteredBirds);
     filteredBirds = sortBirds(selectedSort, filteredBirds);
-    console.log(filteredBirds);
     setFilteredList(filteredBirds);
   }, [selectedStatus, searchField, selectedSort, birdData])
 
   useEffect(() => {
     setFilteredList("");
+    setSelectedSort("eng-alphabetical")
   }, [resetButton])
 
   const filterByStatus = (status, birds) => {
@@ -58,40 +57,60 @@ function App() {
     return birds;
   }
 
-  //Comparer Function    
-  // return function(a, b) {    
-  //     if (a[prop] > b[prop]) {    
-  //         return 1;    
-  //     } else if (a[prop] < b[prop]) {    
-  //         return -1;    
-  //     }    
-  //     return 0;    
-  // }    
-
 
   const sortBirds = (sort, birds) => {
-    if (sort === "alphabetical" && birds) {
+    if (sort === "eng-alphabetical" && birds) {
       return birds.sort((a, b) => {
         if (a.english_name > b.english_name) { return 1; }
         if (a.english_name < b.english_name) { return -1; }
+        return 0;
+      });
+    }if (sort === "eng-reverse" && birds) {
+      return birds.sort((a, b) => {
+        if (a.english_name > b.english_name) { return -1; }
+        if (a.english_name < b.english_name) { return 1; }
+        return 0;
+      });
+    } if (sort === "mao-alphabetical" && birds) {
+      return birds.sort((a, b) => {
+        if (a.primary_name > b.primary_name) { return 1; }
+        if (a.primary_name < b.primary_name) { return -1; }
+        return 0;
+      });
+    } if (sort === "mao-reverse" && birds) {
+      return birds.sort((a, b) => {
+        if (a.primary_name > b.primary_name) { return -1; }
+        if (a.primary_name < b.primary_name) { return 1; }
+        return 0;
+      });
+    }if (sort === "increasing-weight" && birds) {
+      return birds.sort((a, b) => {
+        if (a.size.weight.value > b.size.weight.value) { return 1; }
+        if (a.size.weight.value < b.size.weight.value) { return -1; }
+        return 0;
+      });
+    }if (sort === "decreasing-weight" && birds) {
+      return birds.sort((a, b) => {
+        if (a.size.weight.value > b.size.weight.value) { return -1; }
+        if (a.size.weight.value < b.size.weight.value) { return 1; }
+        return 0;
+      });
+    }if (sort === "increasing-length" && birds) {
+      return birds.sort((a, b) => {
+        if (a.size.length.value > b.size.length.value) { return 1; }
+        if (a.size.length.value < b.size.length.value) { return -1; }
+        return 0;
+      });
+    }if (sort === "decreasing-length" && birds) {
+      return birds.sort((a, b) => {
+        if (a.size.length.value > b.size.length.value) { return -1; }
+        if (a.size.length.value < b.size.length.value) { return 1; }
         return 0;
       });
     }
     return birds;
   }
 
-
-  // const filterBySort = (filteredData) => {
-  //   if(!selectedSort) {
-  //     return filteredData;
-  //   }
-  //   if(selectedSort === "alphabetical"){
-  //   const filteredBirds = filteredData.sort()
-  //   }else{
-  //   const filteredBirds = filteredData.sort()
-  //   return filteredBirds;
-  //   }
-  // }
 
   const filterBySearch = (search, birds) => {
     if (search) {
@@ -140,7 +159,7 @@ function App() {
   };
 
   const handleSortChange = (event) => {
-    setSelectedSort(event.trigger.value);
+    setSelectedSort(event.target.value);
   }
 
 
@@ -157,7 +176,7 @@ function App() {
       <div className="w-full h-full flex flex-col md:flex-row">
         <div className="h-[150px] w-full md:basis-1/5 md:h-full bg-neutral-400 bg-opacity-25 z-10 shadow-lg">
           <form>
-            <h3 className="text-center mb-4 text-m pt-2 font-semibold md:text-left md:text-xl pl-4 md:pt-4 md:mb-0">Filter Birds</h3>
+            <h3 className="text-center mb-4 text-m pt-2 font-semibold md:text-left pl-4 md:pt-4 md:mb-0 pb-3">Filter Birds</h3>
             <div className="flex flex-row md:flex-col px-4">
               <div className="text-sm md:text-m">
                 <label>Search:</label>
@@ -188,17 +207,51 @@ function App() {
               </div>
               <div className="mb-2 ml-2 mr-2 md:mx-0">
                 <select value={selectedSort} onChange={handleSortChange} className="w-full h-8 px-2 py-1 border border-black-300 rounded-lg text-xs shadow-sm text-left bg-white">
-                  <option value="alphabetical">A-Z</option>
-                  <option value="reverse-alphabetical">Z-A</option>
-                  <option value="weight">Lightest to heaviest</option>
-                  <option value="length">Shortest to longest</option>
+                  <option value="eng-alphabetical">English A-Z</option>
+                  <option value="eng-reverse">English Z-A</option>
+                  <option value="mao-alphabetical">Maori A-Z</option>
+                  <option value="mao-reverse">Maori Z-A</option>
+                  <option value="increasing-weight">Lightest to heaviest</option>
+                  <option value="decreasing-weight">Heaviest to lightest</option>
+                  <option value="increasing-length">Shortest to longest</option>
+                  <option value="decreasing-length">Longest to shortest</option>
                 </select>
               </div>
             </div>
-            <div className="text-center pt-4">
+            <div className="text-center pt-4 pb-3">
               <input type="submit" value="RESET FILTERS" onChange={handleResetChange} className="truncate w-1/2 md:w-11/12 h-7 px-4 border border-black-300 rounded-lg shadow-sm text-center text-s bg-sky-300 bg-opacity-25" />
             </div>
           </form>
+          <h3 className="text-center mb-4 text-m pt-2 font-semibold md:text-left md:text-m pl-4 md:pt-16 md:mb-3">Conservation Status</h3>
+          <div className="flex flex-row">
+            <div className="relative flex flex-col gap-2 pl-4 pr-1">
+            <div className="rounded-full border-2 bg-not-threatened shadow-md w-4 h-4"></div>
+            <div className="rounded-full border-2 bg-naturally-uncommon shadow-md w-4 h-4"></div>
+            <div className="rounded-full border-2 bg-relict shadow-md w-4 h-4"></div>
+            <div className="rounded-full border-2 bg-recovering shadow-md w-4 h-4"></div>
+            <div className="rounded-full border-2 bg-declining shadow-md w-4 h-4"></div>
+            <div className="rounded-full border-2 bg-nationally-increasing shadow-md w-4 h-4"></div>
+            <div className="rounded-full border-2 bg-nationally-vulnerable shadow-md w-4 h-4"></div>
+            <div className="rounded-full border-2 bg-nationally-endangered shadow-md w-4 h-4"></div>
+            <div className="rounded-full border-2 bg-nationally-critical shadow-md w-4 h-4"></div>
+            <div className="rounded-full border-2 bg-black shadow-md w-4 h-4"></div>
+            </div>
+            <div className="relative flex flex-col gap-1">
+            <p className="text-xs pb-1 font-medium">Not Threatened </p>
+            <p className="text-xs pb-1 font-medium">Naturally Uncommon </p>
+            <p className="text-xs pb-1 font-medium">Relict </p>
+            <p className="text-xs pb-1 font-medium">Recovering </p>
+            <p className="text-xs pb-1 font-medium">Declining </p>
+            <p className="text-xs pb-1 font-medium">Nationally Increasing</p>
+            <p className="text-xs pb-1 font-medium">Nationally Vulnerable </p>
+            <p className="text-xs pb-1 font-medium">Nationally Endangered </p>
+            <p className="text-xs pb-1 font-medium">Nationally Critical </p>
+            <p className="text-xs pb-1 font-medium">Data Deficient </p>
+            </div>
+            </div>
+            <h1 className="text-xs text-center pt-5 font-serif">
+          Conservation status from <a className="underline" href="https://www.doc.govt.nz/nature/conservation-status/">DOC website.</a>
+        </h1>
         </div>
         {filteredList && <main className="h-full basis-4/5  bg-white overflow-y-auto pb-[140px]">
           <div className="flex flex-row flex-wrap justify-center">

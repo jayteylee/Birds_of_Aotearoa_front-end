@@ -1,13 +1,5 @@
 function Card(props) {
   const bird = props.bird;
-  // if(bird.status === "Not Threatened"){
-  //   const colour = "#02a028"
-  // }else if(bird.status ==="Naturally Uncommon"){
-  //   const colour = "#649a31"
-  // }else{
-  //   const colour = "#649a31"
-  // }
-
 
   const getStatusBgColour = (status) => {
     switch (status) {
