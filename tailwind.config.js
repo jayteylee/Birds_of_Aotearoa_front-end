@@ -1,13 +1,13 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  // plugins: [
-  //   require('@tailwindcss/forms'),
-  // ], 
   content: [
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
     extend: {
+      fontFamily: {
+        'roboto': ['Roboto', 'sans-serif'],
+      },
       colors: {
         'boa-teal': '#79c2d0',
         'boa-white': '#f9f9f9',

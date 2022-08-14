@@ -34,12 +34,12 @@ function Card(props) {
       <div className="relative w-full h-full">
         <img className="w-full h-full object-cover" src={bird.photo.source} alt="a native bird"/>
 
-        <p className="absolute text-3xl py-4 px-4 bottom-0 left-0 text-white">{bird.primary_name}</p>
+        <p className="absolute text-3xl py-4 px-4 bottom-0 left-0 text-white ">{bird.primary_name}</p>
         <p className="absolute text-[7px] py-2 px-4 bottom-0 left-0 text-white">Photo by {bird.photo.credit}</p>
         <div className={`-bottom-4 right-4 absolute rounded-full border-2 ${getStatusBgColour(bird.status)} shadow-md w-10 h-10`}></div>
         </div>
       </div>
-      <h2 className='text-lg text-left pr-2 pl-3 py-3 font-serif font-extrabold'>
+      <h2 className='text- text-left pr-1 pl-4 py-3 font-roboto font-extrabold'>
       {bird.english_name}
       </h2>
       <div className='block'>

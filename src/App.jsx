@@ -173,7 +173,7 @@ function App() {
   return (
     <div className="h-screen w-screen relative overflow-hidden">
       <header className='sticky top-0 z-10 shadow-md'>
-        <h1 className='text-center p-4 font-serif text-3xl font-bold text-boa-white bg-boa-teal'>
+        <h1 className='text-center p-4 font-roboto text-3xl font-bold text-boa-white bg-boa-teal'>
           Birds of Aotearoa
         </h1>
       </header>
@@ -181,9 +181,9 @@ function App() {
       <div className="w-full h-full flex flex-col md:flex-row">
         <div className="h-[575px] w-full md:basis-1/5 md:h-full bg-neutral-400 bg-opacity-25 z-10 shadow-lg">
           <form>
-            <h3 className="text-center text-m pt-2 font-semibold md:text-left pl-4 md:pt-4 md:mb-0 pb-3">Filter Birds</h3>
+            <h3 className="text-center text-m pt-2 font-roboto font-semibold md:text-left pl-4 md:pt-4 md:mb-0 pb-3">Filter Birds</h3>
             <div className="flex flex-col px-4">
-              <div className="pl-2 md:pl-0 text-sm md:text-m">
+              <div className="font-roboto pl-2 md:pl-0 text-sm md:text-m">
                 <label>Search:</label>
               </div>
               <div className="mb-2 ml-2 mr-2 md:mx-0">
@@ -223,7 +223,7 @@ function App() {
                 </select>
               </div>
             </div>
-            <div className="text-center pt-4 pb-3">
+            <div className="text-center font-roboto font-medium pt-4 pb-3">
               <input type="submit" value="RESET FILTERS" onChange={handleResetChange} className="truncate w-1/2 md:w-11/12 h-7 px-4 border border-black-300 rounded-lg shadow-sm text-center text-s bg-sky-300 bg-opacity-25" />
             </div>
             <h3 className="text-center mb-3 text-m font-semibold md:text-left md:text-m px-4 md:pt-8">Conservation Status</h3>
