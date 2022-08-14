@@ -22,16 +22,14 @@ function App() {
       }
     )
       .then(response => {
-        console.log(response)
         if (!response.ok) {
           console.error(response.status);
         }
         return response.json();
       })
       .then(data => {
-        console.log(data);
         setBirdData(data);
-        setFilteredList(data);
+        setFilteredList(sortBirds(selectedSort, data));
       });
   };
 
@@ -43,6 +41,7 @@ function App() {
     let filteredBirds = filterByStatus(selectedStatus, birdData);
     filteredBirds = filterBySearch(searchField, filteredBirds);
     filteredBirds = sortBirds(selectedSort, filteredBirds);
+    console.log(filteredBirds);
     setFilteredList(filteredBirds);
   }, [selectedStatus, searchField, selectedSort, birdData])
 
@@ -59,36 +58,30 @@ function App() {
     return birds;
   }
 
-  const sortBirds = (sort, birds) => {
-  //   return birds.filter(
-  //     (bird) => {
-  //       return (
-  //         bird
-  //           .english_name
-  //           .toLowerCase()
-  //           .includes(searchField.toLowerCase()) ||
-  //         bird
-  //           .primary_name
-  //           .toLowerCase()
-  //           .includes(searchField.toLowerCase().normalize("NFC")) ||
-  //         bird
-  //           .scientific_name
-  //           .toLowerCase()
-  //           .includes(searchField.toLowerCase()) ||
-  //         bird
-  //           .family
-  //           .toLowerCase()
-  //           .includes(searchField.toLowerCase()) ||
-  //         bird
-  //           .order
-  //           .toLowerCase()
-  //           .includes(searchField.toLowerCase())
-  //       );
-  //     }
-  //   )
-   }
+  //Comparer Function    
+  // return function(a, b) {    
+  //     if (a[prop] > b[prop]) {    
+  //         return 1;    
+  //     } else if (a[prop] < b[prop]) {    
+  //         return -1;    
+  //     }    
+  //     return 0;    
+  // }    
 
-     // const filterBySort = (filteredData) => {
+
+  const sortBirds = (sort, birds) => {
+    if (sort === "alphabetical" && birds) {
+      return birds.sort((a, b) => {
+        if (a.english_name > b.english_name) { return 1; }
+        if (a.english_name < b.english_name) { return -1; }
+        return 0;
+      });
+    }
+    return birds;
+  }
+
+
+  // const filterBySort = (filteredData) => {
   //   if(!selectedSort) {
   //     return filteredData;
   //   }
