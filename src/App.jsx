@@ -180,7 +180,7 @@ function App() {
                 <label>Search:</label>
               </div>
               <div className="mb-2 ml-2 mr-2 md:mx-0">
-                <input type="text" value={searchField} onChange={handleSearchChange} className="w-full basis-1/3 h-8 px-2 py-1 border border-black-300 rounded-lg shadow-sm text-xs" />
+                <input type="text" value={searchField} placeholder="bellbird" onChange={handleSearchChange} className="w-full basis-1/3 h-8 px-2 py-1 border border-black-300 rounded-lg shadow-sm text-xs" />
               </div>
               <div className="pl-2 md:pl-0 text-sm md:text-m">
                 <label>Conservation Status:</label>
