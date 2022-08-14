@@ -1,22 +1,26 @@
-image: node:16.14.2 # change to match your project's node version
+stages:
+  - build
+  - deploy
 
-cache:
-  paths:
-    - node_modules/
-
-before_script:
-  - rm -rf build
-  - CI=false npm install
+build:
+  image: node:latest
+  stage: build
+  variables: 
+    PUBLIC_URL: https://leeja744.cspages.otago.ac.nz/assignment-1/
+  script:
+    - yarn install
+    - yarn build
+  artifacts:
+    paths:
+      - build/
 
 pages:
+  image: alpine:latest
   stage: deploy
+  variables:
+    GIT_STRATEGY: none
   script:
-    - CI=false npm run build
-    - rm -rf public
-    - cp build/index.html build/404.html
     - mv build public
   artifacts:
     paths:
       - public
-  only:
-    - main
